@@ -1,7 +1,7 @@
 
 # 🛒 API de E-commerce de Camisetas
 
-Esta é uma API RESTful construída com **Node.js**, **Express** e **MySQL**, que permite o cadastro de usuários, login com autenticação JWT e gerenciamento de produtos.
+API RESTful construída com **Node.js**, **Express** e **MySQL**, que permite o cadastro de usuários, login com autenticação JWT e gerenciamento de produtos.
 
 ---
 
@@ -39,29 +39,28 @@ Esta é uma API RESTful construída com **Node.js**, **Express** e **MySQL**, qu
 
 ## ⚙️ Instalação
 
-1. Clone o repositório:
+1. **Clone o repositório:**
    ```bash
-   git clone https://github.com/seu-usuario/seu-repo.git
-   cd seu-repo
+   git clone https://github.com/Rod0002/GreatWorks-API.git
+   cd GreatWorks-API
    ```
 
-2. Instale as dependências:
+2. **Instale as dependências:**
    ```bash
    npm install
    ```
 
-3. Crie um arquivo `.env` na raiz do projeto com o seguinte conteúdo:
-   ```
+3. **Configure o ambiente criando um `.env`:**
+   ```env
    DB_HOST=localhost
    DB_USER=root
    DB_PASSWORD=sua_senha
-   DB_NAME=seu_banco
-   JWT_SECRET=segredo123
+   DB_NAME=greatworks
    PORT=3000
+   JWT_SECRET=segredo123
    ```
 
-4. Crie o banco de dados e a estrutura das tabelas:
-
+4. **Crie o banco de dados e as tabelas no MySQL:**
    ```sql
    CREATE TABLE tb_usuario (
      id_usuario INT AUTO_INCREMENT PRIMARY KEY,
@@ -82,7 +81,7 @@ Esta é uma API RESTful construída com **Node.js**, **Express** e **MySQL**, qu
    );
    ```
 
-5. Inicie o servidor:
+5. **Inicie o servidor:**
    ```bash
    npm start
    ```
@@ -101,11 +100,11 @@ Authorization: Bearer SEU_TOKEN_AQUI
 
 ## 📌 Rotas
 
-### Usuários
+### 🧑‍💻 Usuários
 
-- `POST /usuarios/register`  
+- **POST** `/usuarios/register`  
   Registra um novo usuário.  
-  **Body**:
+  **Body:**
   ```json
   {
     "nome": "João",
@@ -114,9 +113,9 @@ Authorization: Bearer SEU_TOKEN_AQUI
   }
   ```
 
-- `POST /usuarios/login`  
-  Realiza o login e retorna o token JWT.  
-  **Body**:
+- **POST** `/usuarios/login`  
+  Realiza o login e retorna um token JWT.  
+  **Body:**
   ```json
   {
     "email": "joao@email.com",
@@ -126,14 +125,14 @@ Authorization: Bearer SEU_TOKEN_AQUI
 
 ---
 
-### Produtos
+### 📦 Produtos
 
-- `GET /produtos`  
+- **GET** `/produtos`  
   Lista todos os produtos.
 
-- `POST /produtos`  
-  Cria um novo produto. (Pode futuramente ser protegida por token)  
-  **Body**:
+- **POST** `/produtos`  
+  Cria um novo produto. *(Futuramente essa rota poderá exigir autenticação)*  
+  **Body:**
   ```json
   {
     "ds_categoria": "Camiseta",
@@ -148,13 +147,6 @@ Authorization: Bearer SEU_TOKEN_AQUI
 
 ---
 
-## ✍️ Autor
-
-Feito por [Seu Nome].  
-Entre em contato: [seuemail@email.com]
-
----
-
 ## 📝 Licença
 
-Este projeto está licenciado sob a MIT License.
+Este projeto está licenciado sob a [MIT License](LICENSE).
