@@ -1,0 +1,146 @@
+warning: in the working copy of 'node_modules/.package-lock.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'node_modules/dotenv/CHANGELOG.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'node_modules/dotenv/README-es.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'node_modules/dotenv/README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'node_modules/dotenv/lib/main.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'node_modules/dotenv/package.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'node_modules/long/index.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'node_modules/long/package.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'node_modules/long/umd/index.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'node_modules/nodemon/README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'node_modules/nodemon/index.d.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'node_modules/nodemon/package.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'package-lock.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'routes/usuarios.js', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/controllers/usuarioControllers.js b/controllers/usuarioControllers.js[m
+[1mdeleted file mode 100644[m
+[1mindex 6cc97f6..0000000[m
+[1m--- a/controllers/usuarioControllers.js[m
+[1m+++ /dev/null[m
+[36m@@ -1,76 +0,0 @@[m
+[31m-// Importa o módulo de conexão com o banco de dados[m
+[31m-const db = require('../models/db');[m
+[31m-[m
+[31m-// Importa o módulo bcryptjs para encriptação de senhas[m
+[31m-const bcrypt = require('bcryptjs');[m
+[31m-[m
+[31m-// Importa o módulo jsonwebtoken (JWT) para criação de tokens[m
+[31m-const jwt = require('jsonwebtoken');[m
+[31m-[m
+[31m-// Definindo a chave secreta para JWT. O ideal é colocar isso em um arquivo .env[m
+[31m-const JWT_SECRET = process.env.JWT_SECRET || 'segredo123'; // Coloque isso no .env depois[m
+[31m-[m
+[31m-// ===============================[m
+[31m-// FUNÇÃO: Registrar um novo usuário[m
+[31m-// ===============================[m
+[31m-exports.registrar = (req, res) => {[m
+[31m-  // Desestrutura os dados recebidos no corpo da requisição (nome, email, senha)[m
+[31m-  const { nome, email, senha } = req.body;[m
+[31m-[m
+[31m-  // Encripta a senha recebida usando bcrypt[m
+[31m-  bcrypt.hash(senha, 10, (err, hash) => {[m
+[31m-    if (err) [m
+[31m-      // Se houver erro na encriptação, retorna erro 500 (erro interno do servidor)[m
+[31m-      return res.status(500).json({ erro: err });[m
+[31m-[m
+[31m-    // Query SQL para inserir o novo usuário no banco de dados[m
+[31m-    const query = 'INSERT INTO tb_usuario (nome, email, senha) VALUES (?, ?, ?)';[m
+[31m-[m
+[31m-    // Executa a query para inserir o novo usuário[m
+[31m-    db.query(query, [nome, email, hash], (err, result) => {[m
+[31m-      if (err) [m
+[31m-        // Se o email já existe ou houver outro erro na inserção, retorna erro 500[m
+[31m-        return res.status(500).json({ erro: 'Email já existe ou erro ao inserir' });[m
+[31m-[m
+[31m-      // Retorna mensagem de sucesso com status 201 (criado)[m
+[31m-      res.status(201).json({ msg: 'Usuário registrado com sucesso!' });[m
+[31m-    });[m
+[31m-  });[m
+[31m-};[m
+[31m-[m
+[31m-// ===============================[m
+[31m-// FUNÇÃO: Login do usuário[m
+[31m-// ===============================[m
+[31m-exports.login = (req, res) => {[m
+[31m-  // Desestrutura os dados recebidos no corpo da requisição (email e senha)[m
+[31m-  const { email, senha } = req.body;[m
+[31m-[m
+[31m-  // Query SQL para buscar o usuário no banco de dados pelo email[m
+[31m-  const query = 'SELECT * FROM tb_usuario WHERE email = ?';[m
+[31m-[m
+[31m-  // Executa a query para procurar o usuário[m
+[31m-  db.query(query, [email], (err, results) => {[m
+[31m-    if (err || results.length === 0) {[m
+[31m-      // Se não encontrar o usuário ou houver erro, retorna erro 401 (não autorizado)[m
+[31m-      return res.status(401).json({ erro: 'Usuário não encontrado' });[m
+[31m-    }[m
+[31m-[m
+[31m-    // Se o usuário for encontrado, armazena a primeira linha do resultado[m
+[31m-    const usuario = results[0];[m
+[31m-[m
+[31m-    // Compara a senha recebida com a senha armazenada no banco (encriptada)[m
+[31m-    bcrypt.compare(senha, usuario.senha, (err, match) => {[m
+[31m-      if (!match) [m
+[31m-        // Se as senhas não coincidirem, retorna erro 401 (não autorizado)[m
+[31m-        return res.status(401).json({ erro: 'Senha incorreta' });[m
+[31m-[m
+[31m-      // Se a senha for correta, cria um token JWT[m
+[31m-      const token = jwt.sign({ id: usuario.id_usuario, email: usuario.email }, JWT_SECRET, {[m
+[31m-        expiresIn: '2h', // O token expira em 2 horas[m
+[31m-      });[m
+[31m-[m
+[31m-      // Retorna mensagem de sucesso com o token JWT gerado[m
+[31m-      res.json({ msg: 'Login realizado', token });[m
+[31m-    });[m
+[31m-  });[m
+[31m-};[m
+[1mdiff --git a/node_modules/.package-lock.json b/node_modules/.package-lock.json[m
+[1mindex dbc2c83..589e91b 100644[m
+[1m--- a/node_modules/.package-lock.json[m
+[1m+++ b/node_modules/.package-lock.json[m
+[36m@@ -276,9 +276,9 @@[m
+       }[m
+     },[m
+     "node_modules/dotenv": {[m
+[31m-      "version": "16.4.7",[m
+[31m-      "resolved": "https://registry.npmjs.org/dotenv/-/dotenv-16.4.7.tgz",[m
+[31m-      "integrity": "sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ==",[m
+[32m+[m[32m      "version": "16.5.0",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/dotenv/-/dotenv-16.5.0.tgz",[m
+[32m+[m[32m      "integrity": "sha512-m/C+AwOAr9/W1UOIZUo232ejMNnJAJtYQjUbHoNTBNTJSvqzzDh7vnrei3o3r3m9blf6ZoDkvcw0VmozNRFJxg==",[m
+       "license": "BSD-2-Clause",[m
+       "engines": {[m
+         "node": ">=12"[m
+[36m@@ -768,9 +768,9 @@[m
+       "license": "MIT"[m
+     },[m
+     "node_modules/long": {[m
+[31m-      "version": "5.3.1",[m
+[31m-      "resolved": "https://registry.npmjs.org/long/-/long-5.3.1.tgz",[m
+[31m-      "integrity": "sha512-ka87Jz3gcx/I7Hal94xaN2tZEOPoUOEVftkQqZx2EeQRN7LGdfLlI3FvZ+7WDplm+vK2Urx9ULrvSowtdCieng==",[m
+[32m+[m[32m      "version": "5.3.2",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/long/-/long-5.3.2.tgz",[m
+[32m+[m[32m      "integrity": "sha512-mNAgZ1GmyNhD7AuqnTG3/VQ26o760+ZYBPKjPvugO8+nLbYfX6TVpJPseBvopbdY+qpZ/lKUnmEc1LeZYS3QAA==",[m
+       "license": "Apache-2.0"[m
+     },[m
+     "node_modules/lru-cache": {[m
+[36m@@ -909,9 +909,9 @@[m
+       }[m
+     },[m
+     "node_modules/nodemon": {[m
+[31m-      "version": "3.1.9",[m
+[31m-      "resolved": "https://registry.npmjs.org/nodemon/-/nodemon-3.1.9.tgz",[m
+[31m-      "integrity": "sha512-hdr1oIb2p6ZSxu3PB2JWWYS7ZQ0qvaZsc3hK8DR8f02kRzc8rjYmxAIvdz+aYC+8F2IjNaB7HMcSDg8nQpJxyg==",[m
+[32m+[m[32m      "version": "3.1.10",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/nodemon/-/nodemon-3.1.10.tgz",[m
+[32m+[m[32m      "integrity": "sha512-WDjw3pJ0/0jMFmyNDp3gvY2YizjLmmOUQo6DEBY+JgdvW/yQ9mEeSw6H5ythl5Ny2ytb7f9C2nIbjSxMNzbJXw==",[m
+       "dev": true,[m
+       "license": "MIT",[m
+       "dependencies": {[m
+[1mdiff --git a/node_modules/dotenv/CHANGELOG.md b/node_modules/dotenv/CHANGELOG.md[m
+[1mindex e3e40d6..fb72201 100644[m
+[1m--- a/node_modules/dotenv/CHANGELOG.md[m
+[1m+++ b/node_modules/dotenv/CHANGELOG.md[m
+[36m@@ -2,9 +2,25 @@[m
+ [m
+ All notable changes to this project will be 

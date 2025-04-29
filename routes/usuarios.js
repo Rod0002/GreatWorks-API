@@ -1,14 +1,11 @@
-// Importa o módulo Express, utilizado para criação de rotas
+// Importa o módulo Express
 const express = require('express');
 
 // Cria um novo roteador do Express para agrupar as rotas de usuário
 const router = express.Router();
 
 // Importa o controller que contém a lógica para registro e login de usuários
-const usuarioController = require('../controllers/usuarioControllers.js');
-
-// (Opcional) Importa o middleware de autenticação com JWT — pode ser usado para proteger rotas futuras
-const autenticarToken = require('../middleware/auth.js');
+const usuarioController = require('../controllers/usuarioController.js');
 
 // Rota POST /register
 // Registra um novo usuário no sistema (recebe nome, email e senha)
